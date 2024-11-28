@@ -10,10 +10,11 @@
 <body>
     <header class="nav-header">
         <div class="container">
-            <img src="https://www.shutterstock.com/image-vector/bank-building-architecture-facade-government-600nw-2440534455.jpg" alt="Fake Bank Logo" class="logo">
+            <img src="logo.svg" alt="Fake Bank Logo" class="logo">
             <nav>
                 <a href="index.html" class="active">Dashboard</a>
-                <a href="edit-balance.html">Manage Transactions</a>
+                <a href="edit-balance.html">Edit Balance</a>
+                <a href="transaction-editor.html">Transaction Editor</a>
             </nav>
         </div>
     </header>
@@ -25,6 +26,13 @@
             <div class="balance-section">
                 <p>Current Balance</p>
                 <h3 id="balance">$0.00</h3>
+                <div class="currency-selector">
+                    <label for="currency">Currency:</label>
+                    <select id="currency" onchange="updateBalanceDisplay()">
+                        <option value="USD" selected>USD ($)</option>
+                        <option value="GBP">GBP (£)</option>
+                    </select>
+                </div>
             </div>
         </section>
 
@@ -35,8 +43,7 @@
                 <li>No transactions yet.</li>
             </ul>
             <div class="transaction-actions">
-                <button onclick="clearTransactions()">Clear All Transactions</button>
-                <button onclick="redirectTo('edit-balance.html')">Manage Transactions</button>
+                <button onclick="redirectTo('transaction-editor.html')">Manage Transactions</button>
             </div>
         </section>
     </main>
