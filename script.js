@@ -76,3 +76,7 @@ function redirectTo(url) {
 }
 
 // Initialize Page
+document.addEventListener('DOMContentLoaded', () => {
+    updateBalanceDisplay();
+    updateTransactionList();
+});
