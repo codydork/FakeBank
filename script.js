@@ -1,56 +1,74 @@
 let accountBalance = 1000.0;
 const transactionHistory = [];
 
-// Update balance on dashboard
+// Update Balance
 function updateBalance() {
     const balanceElement = document.getElementById('balance');
-    if (balanceElement) balanceElement.textContent = `$${accountBalance.toFixed(2)}`;
+    if (balanceElement) {
+        const total = transactionHistory.reduce((sum, t) => sum + t.amount, 0);
+        accountBalance = total;
+        balanceElement.textContent = `$${accountBalance.toFixed(2)}`;
+    }
 }
 
-// Transfer Funds
-function transferFunds(event) {
+// Add Transaction
+function addTransaction(event) {
     event.preventDefault();
-    const recipient = document.getElementById('recipient').value;
-    const amount = parseFloat(document.getElementById('amount').value);
+    const recipient = document.getElementById('transaction-recipient').value;
+    const amount = parseFloat(document.getElementById('transaction-amount').value);
 
-    if (amount > 0 && amount <= accountBalance) {
-        accountBalance -= amount;
-        transactionHistory.push({ type: 'Transfer', amount, recipient, date: new Date() });
-        alert('Transfer successful!');
+    if (recipient && amount) {
+        transactionHistory.push({ recipient, amount });
+        alert('Transaction added successfully!');
+        updateTransactionList();
         updateBalance();
-        document.querySelector('form').reset();
-    } else {
-        alert('Invalid amount or insufficient balance!');
+        document.getElementById('transaction-form').reset();
     }
 }
 
-// Edit balance
-function editBalance(event) {
-    event.preventDefault();
-    const newBalance = parseFloat(document.getElementById('new-balance').value);
-    if (newBalance >= 0) {
-        accountBalance = newBalance;
-        alert('Balance updated successfully!');
-        window.location.href = 'index.html';
-    } else {
-        alert('Invalid balance value!');
-    }
-}
-
-// Display transaction history
-function displayTransactions() {
+// Update Transaction List (Both Dashboard & Editor)
+function updateTransactionList() {
     const transactionList = document.getElementById('transaction-list');
-    if (transactionList) {
-        transactionList.innerHTML = transactionHistory
-            .map(
-                t => `<li>${t.date.toLocaleString()}: $${t.amount.toFixed(2)} to ${t.recipient}</li>`
-            )
-            .join('');
+    const editableList = document.getElementById('editable-transaction-list');
+
+    const html = transactionHistory.map(
+        (t, index) =>
+            `<li>${t.recipient}: $${t.amount.toFixed(2)} 
+            <button onclick="deleteTransaction(${index})">Delete</button></li>`
+    );
+
+    if (transactionList) transactionList.innerHTML = html.join('');
+    if (editableList) editableList.innerHTML = html.join('');
+
+    if (transactionHistory.length === 0) {
+        if (transactionList) transactionList.innerHTML = '<li>No transactions yet.</li>';
+        if (editableList) editableList.innerHTML = '<li>No transactions yet.</li>';
     }
 }
 
-// On page load
+// Delete Transaction
+function deleteTransaction(index) {
+    transactionHistory.splice(index, 1);
+    alert('Transaction deleted successfully!');
+    updateTransactionList();
+    updateBalance();
+}
+
+// Clear All Transactions
+function clearTransactions() {
+    transactionHistory.length = 0;
+    alert('All transactions cleared!');
+    updateTransactionList();
+    updateBalance();
+}
+
+// Redirect to Pages
+function redirectTo(url) {
+    window.location.href = url;
+}
+
+// Initialize Page
 document.addEventListener('DOMContentLoaded', () => {
     updateBalance();
-    displayTransactions();
+    updateTransactionList();
 });
