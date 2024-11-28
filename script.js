@@ -1,9 +1,6 @@
-let accountBalance = 1000.0;
-const transactionHistory = [];
-const exchangeRates = {
-    USD: 1,
-    GBP: 0.75
-};
+let accountBalance = parseFloat(localStorage.getItem('accountBalance')) || 1000.0;
+const transactionHistory = JSON.parse(localStorage.getItem('transactionHistory')) || [];
+const exchangeRates = { USD: 1, GBP: 0.75 };
 
 // Update balance on all pages
 function updateBalanceDisplay() {
@@ -25,6 +22,7 @@ function editBalance(event) {
 
     if (!isNaN(newBalance)) {
         accountBalance = newBalance / rate;
+        localStorage.setItem('accountBalance', accountBalance);
         alert('Balance updated successfully!');
         redirectTo('index.html');
     } else {
@@ -40,6 +38,7 @@ function addTransaction(event) {
 
     if (recipient && !isNaN(amount)) {
         transactionHistory.push({ recipient, amount });
+        localStorage.setItem('transactionHistory', JSON.stringify(transactionHistory));
         updateTransactionList();
         updateBalance();
         alert('Transaction added successfully!');
@@ -65,6 +64,7 @@ function updateTransactionList() {
 // Delete Transaction
 function deleteTransaction(index) {
     transactionHistory.splice(index, 1);
+    localStorage.setItem('transactionHistory', JSON.stringify(transactionHistory));
     updateTransactionList();
     updateBalance();
     alert('Transaction deleted successfully!');
@@ -75,7 +75,6 @@ function redirectTo(url) {
     window.location.href = url;
 }
 
-// Initialize Page
 document.addEventListener('DOMContentLoaded', () => {
     updateBalanceDisplay();
     updateTransactionList();
