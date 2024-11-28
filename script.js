@@ -1,74 +1,78 @@
 let accountBalance = 1000.0;
 const transactionHistory = [];
+const exchangeRates = {
+    USD: 1,
+    GBP: 0.75
+};
 
-// Update Balance
-function updateBalance() {
+// Update balance on all pages
+function updateBalanceDisplay() {
     const balanceElement = document.getElementById('balance');
+    const currency = document.getElementById('currency')?.value || 'USD';
+    const rate = exchangeRates[currency];
+    const convertedBalance = accountBalance * rate;
+
     if (balanceElement) {
-        const total = transactionHistory.reduce((sum, t) => sum + t.amount, 0);
-        accountBalance = total;
-        balanceElement.textContent = `$${accountBalance.toFixed(2)}`;
+        balanceElement.textContent = `${currency === 'USD' ? '$' : '£'}${convertedBalance.toFixed(2)}`;
+    }
+}
+
+// Edit Balance
+function editBalance(event) {
+    event.preventDefault();
+    const newBalance = parseFloat(document.getElementById('new-balance').value);
+    const rate = parseFloat(document.getElementById('currency-rate').value);
+
+    if (!isNaN(newBalance)) {
+        accountBalance = newBalance / rate;
+        alert('Balance updated successfully!');
+        redirectTo('index.html');
+    } else {
+        alert('Please enter a valid balance!');
     }
 }
 
 // Add Transaction
 function addTransaction(event) {
     event.preventDefault();
-    const recipient = document.getElementById('transaction-recipient').value;
-    const amount = parseFloat(document.getElementById('transaction-amount').value);
+    const recipient = document.getElementById('recipient').value;
+    const amount = parseFloat(document.getElementById('amount').value);
 
-    if (recipient && amount) {
+    if (recipient && !isNaN(amount)) {
         transactionHistory.push({ recipient, amount });
-        alert('Transaction added successfully!');
         updateTransactionList();
         updateBalance();
-        document.getElementById('transaction-form').reset();
+        alert('Transaction added successfully!');
+        document.getElementById('recipient').value = '';
+        document.getElementById('amount').value = '';
     }
 }
 
-// Update Transaction List (Both Dashboard & Editor)
+// Update Transaction List
 function updateTransactionList() {
     const transactionList = document.getElementById('transaction-list');
     const editableList = document.getElementById('editable-transaction-list');
 
-    const html = transactionHistory.map(
-        (t, index) =>
-            `<li>${t.recipient}: $${t.amount.toFixed(2)} 
-            <button onclick="deleteTransaction(${index})">Delete</button></li>`
+    const listItems = transactionHistory.map(
+        (t, i) => `<li>${t.recipient}: $${t.amount.toFixed(2)}
+                    <button onclick="deleteTransaction(${i})">Delete</button></li>`
     );
 
-    if (transactionList) transactionList.innerHTML = html.join('');
-    if (editableList) editableList.innerHTML = html.join('');
-
-    if (transactionHistory.length === 0) {
-        if (transactionList) transactionList.innerHTML = '<li>No transactions yet.</li>';
-        if (editableList) editableList.innerHTML = '<li>No transactions yet.</li>';
-    }
+    if (transactionList) transactionList.innerHTML = listItems.join('') || '<li>No transactions yet.</li>';
+    if (editableList) editableList.innerHTML = listItems.join('') || '<li>No transactions yet.</li>';
 }
 
 // Delete Transaction
 function deleteTransaction(index) {
     transactionHistory.splice(index, 1);
+    updateTransactionList();
+    updateBalance();
     alert('Transaction deleted successfully!');
-    updateTransactionList();
-    updateBalance();
 }
 
-// Clear All Transactions
-function clearTransactions() {
-    transactionHistory.length = 0;
-    alert('All transactions cleared!');
-    updateTransactionList();
-    updateBalance();
-}
-
-// Redirect to Pages
+// Redirect Function
 function redirectTo(url) {
     window.location.href = url;
 }
 
 // Initialize Page
-document.addEventListener('DOMContentLoaded', () => {
-    updateBalance();
-    updateTransactionList();
-});
