@@ -3,42 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Transactions</title>
+    <title>Edit Balance</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header class="nav-header">
         <div class="container">
-            <img src="https://www.shutterstock.com/image-vector/bank-building-architecture-facade-government-600nw-2440534455.jpg" alt="Fake Bank Logo" class="logo">
+            <img src="logo.svg" alt="Fake Bank Logo" class="logo">
             <nav>
                 <a href="index.html">Dashboard</a>
-                <a href="edit-balance.html" class="active">Manage Transactions</a>
+                <a href="edit-balance.html" class="active">Edit Balance</a>
+                <a href="transaction-editor.html">Transaction Editor</a>
             </nav>
         </div>
     </header>
 
     <main class="container">
-        <!-- Transaction Editor -->
-        <section class="card transaction-editor">
-            <h2>Transaction Editor</h2>
-            <form id="transaction-form" onsubmit="addTransaction(event)">
-                <label for="transaction-recipient">Recipient:</label>
-                <input type="text" id="transaction-recipient" placeholder="Recipient's Name" required>
+        <section class="card edit-balance">
+            <h2>Edit Account Balance</h2>
+            <form onsubmit="editBalance(event)">
+                <label for="new-balance">New Balance (USD):</label>
+                <input type="number" id="new-balance" placeholder="Enter new balance in USD" required>
 
-                <label for="transaction-amount">Amount:</label>
-                <input type="number" id="transaction-amount" placeholder="Amount in USD" required>
+                <label for="currency-rate">Currency Rate:</label>
+                <select id="currency-rate">
+                    <option value="1" selected>USD</option>
+                    <option value="0.75">GBP</option>
+                </select>
 
-                <button type="submit">Add Transaction</button>
+                <button type="submit">Update Balance</button>
             </form>
-        </section>
-
-        <!-- Transactions List -->
-        <section class="card manage-transactions">
-            <h2>Manage Transactions</h2>
-            <ul id="editable-transaction-list">
-                <li>No transactions yet.</li>
-            </ul>
         </section>
     </main>
 
